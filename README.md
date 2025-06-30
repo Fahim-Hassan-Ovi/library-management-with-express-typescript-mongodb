@@ -33,7 +33,7 @@ A Library Management System built with **Express**, **TypeScript**, and **MongoD
 
 - ✅ Aggregation
 
-## To run this project need to install 
+## ▶️ run  To run this project need to install 
 - mongoose
 - express.js
 - typescript
