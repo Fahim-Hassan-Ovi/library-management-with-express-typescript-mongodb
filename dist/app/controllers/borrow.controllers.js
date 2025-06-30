@@ -1,42 +1,45 @@
-import express, { Request, Response } from "express";
-import { Borrow } from "../models/borrow.model";
-import { Book } from "../models/books.model";
-import mongoose from "mongoose";
-
-export const borrowRoutes = express.Router();
-
-borrowRoutes.post('/', async (req: Request, res: Response) => {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.borrowRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const borrow_model_1 = require("../models/borrow.model");
+const books_model_1 = require("../models/books.model");
+exports.borrowRoutes = express_1.default.Router();
+exports.borrowRoutes.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
-
         const quantity = req.body.quantity;
-
         const bookId = req.body.book;
-
         // console.log(bookId);
-
         // const book = await Book.findOne({ isbn: bookId });
-        const book = await Book.findById(bookId);
-
+        const book = yield books_model_1.Book.findById(bookId);
         console.log(book);
-
         if (!book) {
             res.status(404).json({ success: false, message: "Book not found" });
         }
-
         else {
-            await book.deductCopies(quantity);
-
-            const borrow = await Borrow.create(body);
-
+            yield book.deductCopies(quantity);
+            const borrow = yield borrow_model_1.Borrow.create(body);
             res.status(201).json({
                 success: true,
                 message: "Book borrowed successfully",
                 data: borrow
-            })
+            });
         }
-
-    } catch (error: any) {
+    }
+    catch (error) {
         console.log(error);
         res.status(400).json({
             message: "Validation failed",
@@ -45,13 +48,12 @@ borrowRoutes.post('/', async (req: Request, res: Response) => {
                 name: "ValidationError",
                 errors: error.errors
             }
-        })
+        });
     }
-})
-
-borrowRoutes.get('/', async (req: Request, res: Response) => {
+}));
+exports.borrowRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const bookSummery = await Borrow.aggregate([
+        const bookSummery = yield borrow_model_1.Borrow.aggregate([
             // step-1
             {
                 $addFields: {
@@ -89,17 +91,18 @@ borrowRoutes.get('/', async (req: Request, res: Response) => {
                     totalQuantity: 1
                 }
             }
-        ])
+        ]);
         res.status(200).json({
             success: true,
             message: "Borrowed books summary retrieved successfully",
             data: bookSummery,
         });
         console.log(bookSummery);
-    } catch (error: any) {
+    }
+    catch (error) {
         res.status(500).json({
             success: false,
             message: error.message,
         });
     }
-})
+}));

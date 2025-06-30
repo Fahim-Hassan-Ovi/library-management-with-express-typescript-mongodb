@@ -2,7 +2,11 @@ import { model, Schema } from "mongoose";
 import { IBorrow } from "../interfaces/borrow.interface";
 
 const borrowSchema = new Schema<IBorrow>({
-    book: { type: String, required: true },
+    book: { 
+        type: Schema.Types.ObjectId, 
+        ref: "Book",
+        required: true 
+    },
     quantity: {
         type: Number,
         required: true,

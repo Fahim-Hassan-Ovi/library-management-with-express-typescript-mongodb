@@ -15,7 +15,7 @@ const bookSchema = new Schema<IBooks, BookModelType,BookInstanceMEthods>(
         copies: {
             type: Number,
             required: true,
-            min: [1, "Copies must be a positive number"]
+            min: [0, "Copies must be a positive number"]
         },
         available: {
             type: Boolean,
